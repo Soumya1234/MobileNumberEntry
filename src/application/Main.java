@@ -21,7 +21,7 @@ public class Main extends Application {
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
-			primaryStage.setTitle("Mobile Number Entry");
+			primaryStage.setTitle("Mobile Number Entry V2");
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("mobile_phone_14388.png"))); 
 			primaryStage.show();
 		} catch(Exception e) {

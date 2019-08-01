@@ -166,7 +166,6 @@ public class UserviewController implements Initializable {
 									mobile_no.positionCaret(0);
 									update_button.setDisable(false);
 								} else {
-									mobileNoExists = true;
 									mobile_no.setText(cdata.getMobile_no());
 									mobile_no.setEditable(false);
 									mobileNoExists =true;
@@ -217,6 +216,7 @@ public class UserviewController implements Initializable {
 	 * Method to update the mobile number in database
 	 */
 	private void updateMobileNo() {
+		System.out.println("mobile_no.getText().length():"+mobile_no.getText().length());
 		try {
 			if (mobile_no.getText().length() != 10 || !mobile_no.getText().matches("[0-9]+")) {
 				throw new InvalidInputException("Please enter valid 10 digit mobile number");
@@ -252,6 +252,7 @@ public class UserviewController implements Initializable {
 		message_label.setText("");
 		mobile_no.setText("");
 		update_button.setDisable(true);
+		mobileNoExists =false;
 	}
 
 }

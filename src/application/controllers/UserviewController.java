@@ -80,12 +80,13 @@ public class UserviewController implements Initializable {
 	@FXML
 	public void handleResetButtonEvent(ActionEvent e) {
 		resetFields();
+		consumer_id.requestFocus();
 	}
 
 	private void resetFields() {
-		consumer_id.setText(" ");
-		message_label.setText(" ");
-		mobile_no.setText(" ");
+		consumer_id.setText("");
+		message_label.setText("");
+		mobile_no.setText("");
 		update_button.setDisable(true);
 	}
 
@@ -128,10 +129,10 @@ public class UserviewController implements Initializable {
 		 * The app starts with empty Consumer Name label, Mobile No textfield and Update
 		 * Button disabled
 		 */
-		consumer_name_label.setText(" ");
+		consumer_name_label.setText("");
 		mobile_no.setEditable(false);
 		update_button.setDisable(true);
-		message_label.setText(" ");
+		message_label.setText("");
 
 		/*
 		 * Event handler for the Consumer ID textfield. Quering the database to check
@@ -157,6 +158,7 @@ public class UserviewController implements Initializable {
 								//System.out.println("The mobile no length is: "+cdata.getMobile_no().length());
 								if (cdata.getMobile_no() == null || cdata.getMobile_no().length() < 10) {
 									mobile_no.setEditable(true);
+									mobile_no.requestFocus();
 									mobile_no.positionCaret(0);
 									update_button.setDisable(false);
 								} else {
@@ -169,10 +171,10 @@ public class UserviewController implements Initializable {
 							throw new InvalidInputException("Please enter valid Consumer ID");
 						}
 					} else {
-						consumer_name_label.setText(" ");
+						consumer_name_label.setText("");
 						update_button.setDisable(true);
 						//message_label.setText(" ");
-						mobile_no.setText(" ");
+						mobile_no.setText("");
 						mobile_no.setEditable(false);
 					}
 				} catch (InvalidInputException e) {

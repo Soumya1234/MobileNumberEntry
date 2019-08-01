@@ -160,12 +160,12 @@ public class UserviewController implements Initializable {
 								// System.out.println("The mobile no length is:
 								// "+cdata.getMobile_no().length());
 								if (cdata.getMobile_no() == null || cdata.getMobile_no().length() < 10) {
-									mobileNoExists = true;
 									mobile_no.setEditable(true);
 									mobile_no.requestFocus();
 									mobile_no.positionCaret(0);
 									update_button.setDisable(false);
 								} else {
+									mobileNoExists = true;
 									mobile_no.setText(cdata.getMobile_no());
 									mobile_no.setEditable(false);
 									mobileNoExists =true;

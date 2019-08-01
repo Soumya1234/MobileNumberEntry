@@ -19,11 +19,14 @@ import application.util.Messages;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class UserviewController implements Initializable {
 	private Connection con;
@@ -52,6 +55,11 @@ public class UserviewController implements Initializable {
 
 	@FXML
 	public void handleUpdateButtonEvent(ActionEvent e) {
+		updateMobileNo();
+
+	}
+
+	private void updateMobileNo() {
 		try {
 			if (mobile_no.getText().length() != 10 || !mobile_no.getText().matches("[0-9]+")) {
 				throw new InvalidInputException("Please enter valid 10 digit mobile number");
@@ -74,7 +82,6 @@ public class UserviewController implements Initializable {
 			// TODO Auto-generated catch block
 			Messages.ShowErrorMessage(e1.getMessage(), "Error");
 		}
-
 	}
 
 	@FXML
@@ -129,6 +136,7 @@ public class UserviewController implements Initializable {
 		 * The app starts with empty Consumer Name label, Mobile No textfield and Update
 		 * Button disabled
 		 */
+		
 		consumer_name_label.setText("");
 		mobile_no.setEditable(false);
 		update_button.setDisable(true);
@@ -185,6 +193,17 @@ public class UserviewController implements Initializable {
 				}
 			}
 		});
+		
+		mobile_no.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		    @Override
+		    public void handle(KeyEvent keyEvent) {
+		        if (keyEvent.getCode() == KeyCode.ENTER)  {
+		             updateMobileNo();
+		             keyEvent.consume();
+		        }
+		    }
+		});
+		
 
 	}
 

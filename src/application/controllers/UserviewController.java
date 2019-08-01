@@ -64,8 +64,8 @@ public class UserviewController implements Initializable {
 			ConsumerDataManager manager = ConsumerDataManager.getInstance(con);
 			if (manager.updateConsumerData(id, mobno, client_ip, now)) {
 				message_label.setText("Successfully updated");
-				consumer_id.setText(" ");
-				mobile_no.setText(" ");
+				consumer_id.setText("");
+				mobile_no.setText("");
 				update_button.setDisable(true);
 			}
 		} catch (InvalidInputException e1) {

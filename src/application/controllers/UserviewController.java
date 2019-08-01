@@ -157,6 +157,7 @@ public class UserviewController implements Initializable {
 								message_label.setText("*No Consumer Found");
 							} else {
 								consumer_name_label.setText(cdata.getName());
+								message_label.setText("");
 								// System.out.println("The mobile no length is:
 								// "+cdata.getMobile_no().length());
 								if (cdata.getMobile_no() == null || cdata.getMobile_no().length() < 10) {

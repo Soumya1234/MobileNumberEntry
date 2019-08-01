@@ -27,9 +27,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class UserviewController implements Initializable {
 	private Connection con;
+	@FXML
+	private Pane pane_root;
 	@FXML
 	private TextField consumer_id;
 	@FXML
@@ -46,55 +50,43 @@ public class UserviewController implements Initializable {
 	private TextField server_port;
 	@FXML
 	private Label message_label;
+
+	/*
+	 * Code to respond to CTRL+R to reset the fields
+	 */
+	@FXML
+	public void handleOnRKeyPressed(KeyEvent keyEvent) {
+		if (keyEvent.getCode() == KeyCode.R) {
+			resetFields();
+			keyEvent.consume();
+		}
+	}
 	
+	/*
+	 * Positions the cursor at the beginning of the text fields when clicked on them
+	 */
 	@FXML
 	public void handleTextFieldActionEvent(ActionEvent e) {
 		consumer_id.positionCaret(0);
 		mobile_no.positionCaret(0);
 	}
 
+	/*
+	 * Event handler for the Update button
+	 */
 	@FXML
 	public void handleUpdateButtonEvent(ActionEvent e) {
 		updateMobileNo();
 
 	}
 
-	private void updateMobileNo() {
-		try {
-			if (mobile_no.getText().length() != 10 || !mobile_no.getText().matches("[0-9]+")) {
-				throw new InvalidInputException("Please enter valid 10 digit mobile number");
-			}
-			String mobno = mobile_no.getText();
-			int id = Integer.parseInt(consumer_id.getText());
-			LocalDate now = LocalDate.now();
-			InetAddress localhost = InetAddress.getLocalHost();
-			String client_ip = (localhost.getHostAddress()).trim();
-			ConsumerDataManager manager = ConsumerDataManager.getInstance(con);
-			if (manager.updateConsumerData(id, mobno, client_ip, now)) {
-				message_label.setText("Successfully updated");
-				consumer_id.setText("");
-				mobile_no.setText("");
-				update_button.setDisable(true);
-			}
-		} catch (InvalidInputException e1) {
-			Messages.ShowErrorMessage(e1.getMessage(), "Error");
-		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			Messages.ShowErrorMessage(e1.getMessage(), "Error");
-		}
-	}
-
+	/*
+	 * Event handler for the Reset button
+	 */
 	@FXML
 	public void handleResetButtonEvent(ActionEvent e) {
 		resetFields();
 		consumer_id.requestFocus();
-	}
-
-	private void resetFields() {
-		consumer_id.setText("");
-		message_label.setText("");
-		mobile_no.setText("");
-		update_button.setDisable(true);
 	}
 
 	@FXML
@@ -136,7 +128,7 @@ public class UserviewController implements Initializable {
 		 * The app starts with empty Consumer Name label, Mobile No textfield and Update
 		 * Button disabled
 		 */
-		
+
 		consumer_name_label.setText("");
 		mobile_no.setEditable(false);
 		update_button.setDisable(true);
@@ -160,10 +152,12 @@ public class UserviewController implements Initializable {
 							ConsumerDataManager manager = ConsumerDataManager.getInstance(con);
 							ConsumerData cdata = manager.getConsumerData(Integer.parseInt(arg2));
 							if (cdata == null) {
+								message_label.setTextFill(Color.web("#ff0000", 0.8));
 								message_label.setText("*No Consumer Found");
 							} else {
 								consumer_name_label.setText(cdata.getName());
-								//System.out.println("The mobile no length is: "+cdata.getMobile_no().length());
+								// System.out.println("The mobile no length is:
+								// "+cdata.getMobile_no().length());
 								if (cdata.getMobile_no() == null || cdata.getMobile_no().length() < 10) {
 									mobile_no.setEditable(true);
 									mobile_no.requestFocus();
@@ -181,30 +175,71 @@ public class UserviewController implements Initializable {
 					} else {
 						consumer_name_label.setText("");
 						update_button.setDisable(true);
-						//message_label.setText(" ");
+						// message_label.setText(" ");
 						mobile_no.setText("");
 						mobile_no.setEditable(false);
 					}
 				} catch (InvalidInputException e) {
 					System.out.println(e.getMessage());
-				}
-				catch (Exception e) {
-					System.out.println("Exception generated:"+e.getMessage());
+				} catch (Exception e) {
+					System.out.println("Exception generated:" + e.getMessage());
 				}
 			}
 		});
-		
-		mobile_no.setOnKeyPressed(new EventHandler<KeyEvent>() {
-		    @Override
-		    public void handle(KeyEvent keyEvent) {
-		        if (keyEvent.getCode() == KeyCode.ENTER)  {
-		             updateMobileNo();
-		             keyEvent.consume();
-		        }
-		    }
-		});
-		
 
+		/*
+		 * Code to handle ENTER key press after entering mobile no in the relevant text field
+		 */
+		mobile_no.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent keyEvent) {
+				if (keyEvent.getCode() == KeyCode.ENTER) {
+					updateMobileNo();
+					keyEvent.consume();
+				}
+			}
+		});
+
+	}
+
+	/*
+	 * Method to update the mobile number in database
+	 */
+	private void updateMobileNo() {
+		try {
+			if (mobile_no.getText().length() != 10 || !mobile_no.getText().matches("[0-9]+")) {
+				throw new InvalidInputException("Please enter valid 10 digit mobile number");
+			}
+			String mobno = mobile_no.getText();
+			int id = Integer.parseInt(consumer_id.getText());
+			LocalDate now = LocalDate.now();
+			InetAddress localhost = InetAddress.getLocalHost();
+			String client_ip = (localhost.getHostAddress()).trim();
+			ConsumerDataManager manager = ConsumerDataManager.getInstance(con);
+			if (manager.updateConsumerData(id, mobno, client_ip, now)) {
+				message_label.setTextFill(Color.web("#00cc00", 0.8));
+				message_label.setText("Successfully updated");
+				consumer_id.setText("");
+				mobile_no.setText("");
+				consumer_id.requestFocus();
+				update_button.setDisable(true);
+			}
+		} catch (InvalidInputException e1) {
+			Messages.ShowErrorMessage(e1.getMessage(), "Error");
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			Messages.ShowErrorMessage(e1.getMessage(), "Error");
+		}
+	}
+
+	/*
+	 * Method to reset the fields and labels
+	 */
+	private void resetFields() {
+		consumer_id.setText("");
+		message_label.setText("");
+		mobile_no.setText("");
+		update_button.setDisable(true);
 	}
 
 }

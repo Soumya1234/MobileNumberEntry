@@ -32,6 +32,7 @@ import javafx.scene.paint.Color;
 
 public class UserviewController implements Initializable {
 	private Connection con;
+	private boolean mobileNoExists = false;
 	@FXML
 	private Pane pane_root;
 	@FXML
@@ -61,7 +62,7 @@ public class UserviewController implements Initializable {
 			keyEvent.consume();
 		}
 	}
-	
+
 	/*
 	 * Positions the cursor at the beginning of the text fields when clicked on them
 	 */
@@ -86,7 +87,7 @@ public class UserviewController implements Initializable {
 	@FXML
 	public void handleResetButtonEvent(ActionEvent e) {
 		resetFields();
-		consumer_id.requestFocus();
+
 	}
 
 	@FXML
@@ -159,6 +160,7 @@ public class UserviewController implements Initializable {
 								// System.out.println("The mobile no length is:
 								// "+cdata.getMobile_no().length());
 								if (cdata.getMobile_no() == null || cdata.getMobile_no().length() < 10) {
+									mobileNoExists = true;
 									mobile_no.setEditable(true);
 									mobile_no.requestFocus();
 									mobile_no.positionCaret(0);
@@ -166,6 +168,7 @@ public class UserviewController implements Initializable {
 								} else {
 									mobile_no.setText(cdata.getMobile_no());
 									mobile_no.setEditable(false);
+									mobileNoExists =true;
 								}
 							}
 
@@ -188,13 +191,19 @@ public class UserviewController implements Initializable {
 		});
 
 		/*
-		 * Code to handle ENTER key press after entering mobile no in the relevant text field
+		 * Code to handle ENTER key press after entering mobile no in the relevant text
+		 * field
 		 */
 		mobile_no.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent keyEvent) {
 				if (keyEvent.getCode() == KeyCode.ENTER) {
-					updateMobileNo();
+					if (mobileNoExists) {
+						message_label.setTextFill(Color.web("#ff0000", 0.8));
+						message_label.setText("Mob. No. already exists");
+					} else {
+						updateMobileNo();
+					}
 					keyEvent.consume();
 				}
 			}
@@ -202,6 +211,7 @@ public class UserviewController implements Initializable {
 
 	}
 
+	
 	/*
 	 * Method to update the mobile number in database
 	 */
@@ -237,6 +247,7 @@ public class UserviewController implements Initializable {
 	 */
 	private void resetFields() {
 		consumer_id.setText("");
+		consumer_id.requestFocus();
 		message_label.setText("");
 		mobile_no.setText("");
 		update_button.setDisable(true);
